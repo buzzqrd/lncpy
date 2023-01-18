@@ -9,6 +9,7 @@ all: $(SOURCES)
 	$(CCOMPILER) $(SOURCES) -o $(TARGET)
 
 install:
+	$(CCOMPILER) $(SOURCES) -o $(TARGET)
 	cp $(TARGET) $(INSTALL_PATH)
 	
 uninstall:
