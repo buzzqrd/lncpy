@@ -86,7 +86,7 @@ Examples:\n\
 	}
 
 	/* save the last half of the dest to a temp file */
-	long midln = seekln(dstln-1, df);
+	long midln = seekln(dstln, df);
 	while((c = fgetc(df)) != EOF){
 		fputc(c, tmpfp);
 	}
