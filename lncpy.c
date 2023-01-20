@@ -54,7 +54,9 @@ Examples:\n\
 	}
 
 	/* better define the arguments */
-	char *srcfile = (char *)argv[2], *dstfile = (char *)argv[4];
+	char *srcfile = (char *)argv[2],\
+	 *dstfile = (char *)argv[4];
+	
 	long srcln = atol(argv[1])-1,\
 	dstln = atol(argv[3]),\
 	srcend = -1;
@@ -66,7 +68,7 @@ Examples:\n\
 	if(*s){ s++; srcend = atol(s); }
 
 	
-	
+	/* calcuate line count to copy */
 	int lncnt = 1;
 	if(srcend != -1){
 		lncnt = srcend - srcln;
@@ -75,7 +77,6 @@ Examples:\n\
 	FILE *sf = fopen(srcfile, "r");
 	FILE *df = fopen(dstfile, "r+");
 
-	char c = 0;
 	FILE *tmpfp = tmpfile();
 	if(tmpfp == NULL){
 		fprintf(stderr, "Error: could not open a new temp file.\n");
@@ -86,17 +87,20 @@ Examples:\n\
 	}
 
 	/* save the last half of the dest to a temp file */
+	char c = 0;
 	long midln = seekln(dstln, df);
 	while((c = fgetc(df)) != EOF){
 		fputc(c, tmpfp);
 	}
 	
 
-
+	/* move file pointers to corect spots for re-assembly */
 	fseek(tmpfp, 0, SEEK_SET);
 	seekln(dstln, df);
 	seekln(srcln, sf);
 
+
+	/* insert new lines from source file */
 	int line = 0;
 	while(line < lncnt){
 		c = fgetc(sf);
@@ -113,11 +117,12 @@ Examples:\n\
 		fputc(c, df);
 	}
 	
-	
+	/* re-add second half of original destination file */
 	while((c = fgetc(tmpfp)) != EOF){
 		fputc(c, df);
 	}
 
+	/* close up */
 	fclose(df);
 	fclose(sf);
 	fclose(tmpfp);
